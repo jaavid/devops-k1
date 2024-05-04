@@ -1,0 +1,31 @@
+---
+- name: Setup Kubernetes Cluster
+  hosts: k8s_servers
+  become: yes
+  tasks:
+    - name: Update apt cache and install necessary packages on master
+      when: inventory_hostname == "k8s-master"
+      apt:
+        update_cache: yes
+        name: ['docker.io', 'kubelet', 'kubeadm']
+        state: present
+
+    - name: Initialize the Kubernetes cluster on master
+      when: inventory_hostname == "k8s-master"
+      command: kubeadm init --apiserver-advertise-address={{ ansible_host }} --pod-network-cidr=10.244.0.0/16
+      register: init_output
+      changed_when: false
+
+    - name: Set up kubeconfig on master
+      when: inventory_hostname == "k8s-master" and init_output.stdout!= ""
+      command: "{{ init_output.stdout }}"
+
+    - name: Install Docker, kubelet, and kubeadm on workers
+      when: inventory_hostname in ["k8s-worker1", "k8s-worker2"]
+      apt:
+        name: ['docker.io', 'kubelet', 'kubeadm']
+        state: present
+
+    - name: Join worker nodes to the cluster
+      when: inventory_hostname in ["k8s-worker1", "k8s-worker2"] and init_output.stdout!= ""
+      command: kubeadm join --token {{ init_output.stdout | regex_search('kubeadm join --token ([^ ]+)') | first }} {{ init_output.stdout | regex_search('kubeadm join --token ([^ ]+)') | first }} --discovery-token-ca-cert-hash {{ init_output.stdout | regex_search('--discovery-token-ca-cert-hash ([^ ]+)') | first }}
