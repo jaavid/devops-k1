@@ -1,0 +1,12 @@
+- name: Join worker nodes to the cluster
+  hosts: k8s_worker
+  become: yes
+  tasks:
+    - name: Install Docker, kubelet, and kubeadm
+      apt:
+        name: ['docker.io', 'kubelet', 'kubeadm']
+        state: present
+
+    - name: Join the worker node to the cluster
+      command: kubeadm join --token {{ init_output.stdout | regex_search('kubeadm join --token ([^ ]+)') | first }} {{ init_output.stdout | regex_search('kubeadm join --token ([^ ]+)') | first }} --discovery-token-ca-cert-hash {{ init_output.stdout | regex_search('--discovery-token-ca-cert-hash ([^ ]+)') | first }}
+      when: init_output.stdout!= ""
