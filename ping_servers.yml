@@ -1,0 +1,12 @@
+---
+- name: Ping Kubernetes servers and gather facts
+  hosts: k8s_servers
+  gather_facts: yes
+  tasks:
+    - name: Ping each server
+      command: ping -c 4 {{ ansible_host }}
+      register: ping_results
+
+    - name: Display ping results
+      debug:
+        var: ping_results.stdout_lines
