@@ -1,0 +1,68 @@
+
+PLAY [Update nameservers and check access to oracle.com] ***********************
+
+TASK [Gathering Facts] *********************************************************
+ok: [k8s-master]
+ok: [k8s-worker1]
+ok: [k8s-worker2]
+
+TASK [check google nameservers] ************************************************
+changed: [k8s-master]
+changed: [k8s-worker1]
+changed: [k8s-worker2]
+
+TASK [Add second nameserver] ***************************************************
+changed: [k8s-worker2]
+changed: [k8s-master]
+changed: [k8s-worker1]
+
+TASK [Check access to oracle.com] **********************************************
+fatal: [k8s-master]: FAILED! => {"actual_object_ttl": "-1", "akamai_grn": "0.a76ed417.1714824633.d727af6", "cache_control": "max-age=0, no-cache, no-store", "changed": false, "connection": "close", "content": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n\n    \n<title>403 Oracle Export Error</title>\n\n  <title></title>\n</head>\n<body>\n<div align=\"center\">\n    <div align=\"center\">\n<p>&nbsp;</p>\n</div>\n<table width=\"449\" border=\"0\" align=\"center\">\n    <tbody>\n        <tr>\n            <td class=\"bodycopy\" valign=\"top\">\n            <div align=\"center\">\n            <p><img alt=\"\" src=\"https://www.oracle.com/splash/oralogo_small.gif\" width=\"154\" height=\"19\" /></p>\n            <p>&nbsp;</p>\n            </div>\n            </td>\n        </tr>\n        <tr>\n            <td width=\"68%\" valign=\"top\">\n            <div align=\"center\">\n            <p align=\"justify\"><font face=\"Arial, Helvetica, sans-serif\">In compliance with U.S. and applicable Export laws we are unable to process your request to <script> document.write(document.location);</script>.&nbsp; Please contact <a moz-do-not-send=\"true\" href=\"mailto:RPLS-Ops_ww@oracle.com\">RPLS-Ops_ww@oracle.com</a> if you believe you are receiving this notice in error.&nbsp;<br><br><b>Reference ID: 0.a76ed417.1714824633.d727af6</b></font><br />\n            &nbsp;</p>\n            </div>\n            </td>\n        </tr>\n    </tbody>\n</table>\n</div>\n</body>\n</html>", "content_length": "1338", "content_security_policy": "frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com", "content_type": "text/html", "date": "Sat, 04 May 2024 12:10:33 GMT", "elapsed": 3, "expires": "Sat, 04 May 2024 12:10:33 GMT", "mime_version": "1.0", "msg": "Status code was 403 and not [200]: HTTP Error 403: Forbidden", "origin_cache_control": "NO_HEADER_PRESENTED", "origin_edge_control": "NO_HEADER_PRESENTED", "pragma": "no-cache", "redirected": false, "server": "AkamaiGHost", "server_timing": "ak_p; desc=\"1714824632959_399797927_225606390_22_12139_423_150_-\";dur=1", "set_cookie": "akaas_aud-seg-ocom-prod=2147483647~rv=36~id=33a44bc8e9cfa542ca6bb4a1dddadebf; path=/; Secure; SameSite=None", "status": 403, "url": "http://oracle.com", "x_content_type_options": "nosniff", "x_frame_options": "sameorigin", "x_xss_protection": "1"}
+...ignoring
+fatal: [k8s-worker2]: FAILED! => {"actual_object_ttl": "-1", "akamai_grn": "0.a76ed417.1714824633.d727b05", "cache_control": "max-age=0, no-cache, no-store", "changed": false, "connection": "close", "content": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n\n    \n<title>403 Oracle Export Error</title>\n\n  <title></title>\n</head>\n<body>\n<div align=\"center\">\n    <div align=\"center\">\n<p>&nbsp;</p>\n</div>\n<table width=\"449\" border=\"0\" align=\"center\">\n    <tbody>\n        <tr>\n            <td class=\"bodycopy\" valign=\"top\">\n            <div align=\"center\">\n            <p><img alt=\"\" src=\"https://www.oracle.com/splash/oralogo_small.gif\" width=\"154\" height=\"19\" /></p>\n            <p>&nbsp;</p>\n            </div>\n            </td>\n        </tr>\n        <tr>\n            <td width=\"68%\" valign=\"top\">\n            <div align=\"center\">\n            <p align=\"justify\"><font face=\"Arial, Helvetica, sans-serif\">In compliance with U.S. and applicable Export laws we are unable to process your request to <script> document.write(document.location);</script>.&nbsp; Please contact <a moz-do-not-send=\"true\" href=\"mailto:RPLS-Ops_ww@oracle.com\">RPLS-Ops_ww@oracle.com</a> if you believe you are receiving this notice in error.&nbsp;<br><br><b>Reference ID: 0.a76ed417.1714824633.d727b05</b></font><br />\n            &nbsp;</p>\n            </div>\n            </td>\n        </tr>\n    </tbody>\n</table>\n</div>\n</body>\n</html>", "content_length": "1338", "content_security_policy": "frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com", "content_type": "text/html", "date": "Sat, 04 May 2024 12:10:33 GMT", "elapsed": 3, "expires": "Sat, 04 May 2024 12:10:33 GMT", "mime_version": "1.0", "msg": "Status code was 403 and not [200]: HTTP Error 403: Forbidden", "origin_cache_control": "NO_HEADER_PRESENTED", "origin_edge_control": "NO_HEADER_PRESENTED", "pragma": "no-cache", "redirected": false, "server": "AkamaiGHost", "server_timing": "ak_p; desc=\"1714824632980_399797927_225606405_23_13731_433_149_-\";dur=1", "set_cookie": "akaas_aud-seg-ocom-prod=2147483647~rv=94~id=237f29dbc62c81f27365c20cb206564b; path=/; Secure; SameSite=None", "status": 403, "url": "http://oracle.com", "x_content_type_options": "nosniff", "x_frame_options": "sameorigin", "x_xss_protection": "1"}
+...ignoring
+fatal: [k8s-worker1]: FAILED! => {"actual_object_ttl": "-1", "akamai_grn": "0.a76ed417.1714824633.d727dea", "cache_control": "max-age=0, no-cache, no-store", "changed": false, "connection": "close", "content": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n\n    \n<title>403 Oracle Export Error</title>\n\n  <title></title>\n</head>\n<body>\n<div align=\"center\">\n    <div align=\"center\">\n<p>&nbsp;</p>\n</div>\n<table width=\"449\" border=\"0\" align=\"center\">\n    <tbody>\n        <tr>\n            <td class=\"bodycopy\" valign=\"top\">\n            <div align=\"center\">\n            <p><img alt=\"\" src=\"https://www.oracle.com/splash/oralogo_small.gif\" width=\"154\" height=\"19\" /></p>\n            <p>&nbsp;</p>\n            </div>\n            </td>\n        </tr>\n        <tr>\n            <td width=\"68%\" valign=\"top\">\n            <div align=\"center\">\n            <p align=\"justify\"><font face=\"Arial, Helvetica, sans-serif\">In compliance with U.S. and applicable Export laws we are unable to process your request to <script> document.write(document.location);</script>.&nbsp; Please contact <a moz-do-not-send=\"true\" href=\"mailto:RPLS-Ops_ww@oracle.com\">RPLS-Ops_ww@oracle.com</a> if you believe you are receiving this notice in error.&nbsp;<br><br><b>Reference ID: 0.a76ed417.1714824633.d727dea</b></font><br />\n            &nbsp;</p>\n            </div>\n            </td>\n        </tr>\n    </tbody>\n</table>\n</div>\n</body>\n</html>", "content_length": "1338", "content_security_policy": "frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com", "content_type": "text/html", "date": "Sat, 04 May 2024 12:10:33 GMT", "elapsed": 3, "expires": "Sat, 04 May 2024 12:10:33 GMT", "mime_version": "1.0", "msg": "Status code was 403 and not [200]: HTTP Error 403: Forbidden", "origin_cache_control": "NO_HEADER_PRESENTED", "origin_edge_control": "NO_HEADER_PRESENTED", "pragma": "no-cache", "redirected": false, "server": "AkamaiGHost", "server_timing": "ak_p; desc=\"1714824632517_399797927_225607146_21_13667_227_1250_-\";dur=1", "set_cookie": "akaas_aud-seg-ocom-prod=2147483647~rv=13~id=fa016b7f6d6e6dfa68ab9554018a6547; path=/; Secure; SameSite=None", "status": 403, "url": "http://oracle.com", "x_content_type_options": "nosniff", "x_frame_options": "sameorigin", "x_xss_protection": "1"}
+...ignoring
+
+TASK [Print access status] *****************************************************
+ok: [k8s-master] => {
+    "msg": "Access to oracle.com is 403"
+}
+ok: [k8s-worker1] => {
+    "msg": "Access to oracle.com is 403"
+}
+ok: [k8s-worker2] => {
+    "msg": "Access to oracle.com is 403"
+}
+
+TASK [Set nameservers] *********************************************************
+changed: [k8s-master]
+changed: [k8s-worker2]
+changed: [k8s-worker1]
+
+TASK [Add second nameserver] ***************************************************
+changed: [k8s-master]
+changed: [k8s-worker1]
+changed: [k8s-worker2]
+
+TASK [Check access to oracle.com] **********************************************
+ok: [k8s-worker1]
+ok: [k8s-master]
+ok: [k8s-worker2]
+
+TASK [Print access status] *****************************************************
+ok: [k8s-master] => {
+    "msg": "Access to oracle.com is 200"
+}
+ok: [k8s-worker1] => {
+    "msg": "Access to oracle.com is 200"
+}
+ok: [k8s-worker2] => {
+    "msg": "Access to oracle.com is 200"
+}
+
+PLAY RECAP *********************************************************************
+k8s-master                 : ok=9    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
+k8s-worker1                : ok=9    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
+k8s-worker2                : ok=9    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
+

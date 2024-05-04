@@ -1,0 +1,55 @@
+---
+- name: Update nameservers and check access to oracle.com
+  hosts: all
+  become: yes
+  tasks:
+    - name: check google nameservers
+      lineinfile:
+        path: /etc/resolv.conf
+        regexp: '^nameserver'
+        line: 'nameserver 8.8.8.8'
+        state: present
+
+    - name: Add second nameserver
+      lineinfile:
+        path: /etc/resolv.conf
+        regexp: '^nameserver'
+        line: 'nameserver 8.8.4.4'
+        state: present
+    
+    - name: Check access to oracle.com
+      uri:
+        url: http://oracle.com
+        return_content: yes
+      register: oracle_access_googel
+      ignore_errors: yes
+
+    - name: Print access status
+      debug:
+        msg: "Access to oracle.com is {{ oracle_access_googel.status }}"
+
+
+    - name: Set nameservers
+      lineinfile:
+        path: /etc/resolv.conf
+        regexp: '^nameserver'
+        line: 'nameserver 10.202.10.102'
+        state: present
+
+    - name: Add second nameserver
+      lineinfile:
+        path: /etc/resolv.conf
+        regexp: '^nameserver'
+        line: 'nameserver 10.202.10.202'
+        state: present
+
+    - name: Check access to oracle.com
+      uri:
+        url: http://oracle.com
+        return_content: yes
+      register: oracle_access
+      ignore_errors: yes
+
+    - name: Print access status
+      debug:
+        msg: "Access to oracle.com is {{ oracle_access.status }}"
