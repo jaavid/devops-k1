@@ -1,0 +1,59 @@
+
+PLAY [Ping Kubernetes servers and gather facts] ********************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [k8s-worker2]
+ok: [k8s-worker1]
+ok: [k8s-master]
+
+TASK [Ping each server] ********************************************************
+changed: [k8s-master]
+changed: [k8s-worker2]
+changed: [k8s-worker1]
+
+TASK [Display ping results] ****************************************************
+ok: [k8s-master] => {
+    "ping_results.stdout_lines": [
+        "PING 192.168.64.5 (192.168.64.5) 56(84) bytes of data.",
+        "64 bytes from 192.168.64.5: icmp_seq=1 ttl=64 time=0.038 ms",
+        "64 bytes from 192.168.64.5: icmp_seq=2 ttl=64 time=0.113 ms",
+        "64 bytes from 192.168.64.5: icmp_seq=3 ttl=64 time=0.268 ms",
+        "64 bytes from 192.168.64.5: icmp_seq=4 ttl=64 time=0.121 ms",
+        "",
+        "--- 192.168.64.5 ping statistics ---",
+        "4 packets transmitted, 4 received, 0% packet loss, time 3181ms",
+        "rtt min/avg/max/mdev = 0.038/0.135/0.268/0.083 ms"
+    ]
+}
+ok: [k8s-worker1] => {
+    "ping_results.stdout_lines": [
+        "PING 192.168.64.6 (192.168.64.6) 56(84) bytes of data.",
+        "64 bytes from 192.168.64.6: icmp_seq=1 ttl=64 time=0.032 ms",
+        "64 bytes from 192.168.64.6: icmp_seq=2 ttl=64 time=0.139 ms",
+        "64 bytes from 192.168.64.6: icmp_seq=3 ttl=64 time=0.224 ms",
+        "64 bytes from 192.168.64.6: icmp_seq=4 ttl=64 time=0.064 ms",
+        "",
+        "--- 192.168.64.6 ping statistics ---",
+        "4 packets transmitted, 4 received, 0% packet loss, time 3217ms",
+        "rtt min/avg/max/mdev = 0.032/0.114/0.224/0.074 ms"
+    ]
+}
+ok: [k8s-worker2] => {
+    "ping_results.stdout_lines": [
+        "PING 192.168.64.7 (192.168.64.7) 56(84) bytes of data.",
+        "64 bytes from 192.168.64.7: icmp_seq=1 ttl=64 time=0.043 ms",
+        "64 bytes from 192.168.64.7: icmp_seq=2 ttl=64 time=0.190 ms",
+        "64 bytes from 192.168.64.7: icmp_seq=3 ttl=64 time=0.130 ms",
+        "64 bytes from 192.168.64.7: icmp_seq=4 ttl=64 time=0.095 ms",
+        "",
+        "--- 192.168.64.7 ping statistics ---",
+        "4 packets transmitted, 4 received, 0% packet loss, time 3204ms",
+        "rtt min/avg/max/mdev = 0.043/0.114/0.190/0.053 ms"
+    ]
+}
+
+PLAY RECAP *********************************************************************
+k8s-master                 : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+k8s-worker1                : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+k8s-worker2                : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
