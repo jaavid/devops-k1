@@ -1,0 +1,12 @@
+- name: Initialize the Kubernetes cluster
+  hosts: k8s-master
+  become: yes
+  tasks:
+    - name: Initialize the cluster
+      command: kubeadm init --apiserver-advertise-address={{ ansible_host }} --pod-network-cidr=10.244.0.0/16
+      register: init_output
+      changed_when: false
+
+    - name: Set up kubeconfig
+      command: "{{ init_output.stdout }}"
+      when: init_output.stdout!= ""
