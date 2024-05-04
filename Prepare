@@ -1,0 +1,12 @@
+- name: Update apt cache and install necessary packages
+  hosts: k8s-master
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker, kubelet, and kubeadm
+      apt:
+        name: ['docker.io', 'kubelet', 'kubeadm']
+        state: present
