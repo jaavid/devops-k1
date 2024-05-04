@@ -1,0 +1,81 @@
+---
+- name: Install Kubernetes Components
+  hosts: k8s-master
+  become: yes
+  tasks:
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Install prerequisite packages
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'gpg']
+        state: present
+
+    - name: Add Kubernetes signing key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add Kubernetes apt repository
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+
+    - name: Update apt package index after adding Kubernetes repository
+      apt:
+        update_cache: yes
+
+    - name: Install kubelet, kubeadm, and kubectl
+      apt:
+        name: ['kubelet', 'kubeadm', 'kubectl']
+        state: present
+
+    - name: Pin kubelet, kubeadm, and kubectl versions
+      apt:
+        name: ['kubelet', 'kubeadm', 'kubectl']
+        state: hold
+
+    - name: Enable kubelet service
+      systemd:
+        name: kubelet
+        enabled: yes
+        state: started
+
+    - name: Set SELinux to permissive mode (optional)
+      command: setenforce 0
+      when: ansible_os_family == "RedHat"
+
+    - name: Download CNI plugins
+      shell: |
+        CNI_PLUGINS_VERSION="v1.3.0"
+        ARCH="amd64"
+        DEST="/opt/cni/bin"
+        sudo mkdir -p "$DEST"
+        curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_PLUGINS_VERSION}/cni-plugins-linux-${ARCH}-${CNI_PLUGINS_VERSION}.tgz" | sudo tar -C "$DEST" -xz
+      args:
+        executable: /bin/bash
+
+    - name: Install crictl
+      shell: |
+        CRICTL_VERSION="v1.28.0"
+        ARCH="amd64"
+        DOWNLOAD_DIR="/usr/local/bin"
+        sudo mkdir -p "$DOWNLOAD_DIR"
+        curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${ARCH}.tar.gz" | sudo tar -C $DOWNLOAD_DIR -xz
+      args:
+        executable: /bin/bash
+
+    - name: Install kubeadm, kubelet, and add a kubelet systemd service
+      shell: |
+        RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
+        ARCH="amd64"
+        cd $DOWNLOAD_DIR
+        sudo curl -L --remote-name-all https://dl.k8s.io/release/${RELEASE}/bin/linux/${ARCH}/{kubeadm,kubelet}
+        sudo chmod +x {kubeadm,kubelet}
+        RELEASE_VERSION="v0.16.2"
+        curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/krel/templates/latest/kubelet/kubelet.service" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /usr/lib/systemd/system/kubelet.service
+        sudo mkdir -p /usr/lib/systemd/system/kubelet.service.d
+        curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/krel/templates/latest/kubeadm/10-kubeadm.conf" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+      args:
+        executable: /bin/bash

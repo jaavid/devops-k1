@@ -3,6 +3,16 @@
   hosts: k8s_servers
   become: yes
   tasks:
+    - name: update apt cache and install packages on all
+      apt:
+       update_cache: yes
+    
+    - name: Install Docker, kubelet, and kubeadm on master
+      when: inventory_hostname == "k8s-master"
+      apt:
+        name: ['apt-transport-https','ca-certificates', 'curl','gpg']
+        state: present
+
     - name: Update apt cache and install necessary packages on master
       when: inventory_hostname == "k8s-master"
       apt:
@@ -11,13 +21,13 @@
     - name: Add Kubernetes signing key
       when: inventory_hostname == "k8s-master"
       apt_key:
-        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key
         state: present
 
     - name: Add Kubernetes apt repository
       when: inventory_hostname == "k8s-master"
       apt_repository:
-        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
         state: present
 
     - name: Update apt cache after adding Kubernetes repository on master
